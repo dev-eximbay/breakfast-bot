@@ -29,4 +29,4 @@ jobs:
       - name: Run Java Bot
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        run: java -cp .:lib/breakfast-test.jar BreakfastBot
+        run: mvn exec:java -Dexec.mainClass="org.example.breakfast.service.SlackBotService"
