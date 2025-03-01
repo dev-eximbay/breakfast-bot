@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.example.breakfast'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation("com.slack.api:slack-api-client:1.45.3")
+}
+
+test {
+    useJUnitPlatform()
+}
