@@ -1,0 +1,32 @@
+name: Breakfast Slack Bot (Java)
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"  # 매일 아침 7시 (UTC 기준, 한국 시간 16시) 실행
+  workflow_dispatch:  # 수동 실행 가능
+
+jobs:
+  send_message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Install dependencies
+        run: |
+          mkdir -p lib
+          curl -L -o lib/google-oauth-client.jar https://repo1.maven.org/maven2/com/google/oauth-client/google-oauth-client-java6/1.34.1/google-oauth-client-java6-1.34.1.jar
+
+      - name: Compile Java Code
+        run: javac -cp lib/google-oauth-client.jar BreakfastBot.java
+
+      - name: Run Java Bot
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        run: java -cp .:lib/breakfast-test.jar BreakfastBot
