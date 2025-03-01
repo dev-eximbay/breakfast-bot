@@ -24,7 +24,7 @@ jobs:
           curl -L -o lib/google-oauth-client.jar https://repo1.maven.org/maven2/com/google/oauth-client/google-oauth-client-java6/1.34.1/google-oauth-client-java6-1.34.1.jar
 
       - name: Compile Java Code
-        run: javac -cp lib/google-oauth-client.jar BreakfastBot.java
+        run: javac -cp lib/google-oauth-client.jar SlackBotService.java
 
       - name: Run Java Bot
         env:
