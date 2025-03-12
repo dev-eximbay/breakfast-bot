@@ -25,4 +25,4 @@ jobs:
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           FILE_ID: ${{ github.event.client_payload.file_id }}
-        run: ./gradlew run --args="$FILE_ID"
+        run: ./gradlew runUpload --args="$FILE_ID"

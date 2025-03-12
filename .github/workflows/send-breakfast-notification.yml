@@ -27,4 +27,4 @@ jobs:
       - name: Run Java Bot
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        run: ./gradlew run
+        run: ./gradlew runNotify
