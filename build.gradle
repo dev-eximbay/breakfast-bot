@@ -13,7 +13,11 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    implementation("com.slack.api:slack-api-client:1.45.3")
+    implementation 'com.slack.api:slack-api-client:1.45.3'
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+    implementation 'com.google.auth:google-auth-library-oauth2-http:1.7.0'
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'ch.qos.logback:logback-classic:1.4.11' // Logback 추가
 }
 
 test {
@@ -21,5 +25,5 @@ test {
 }
 
 application {
-    mainClass = 'org.example.breakfast.service.SlackBotService'  // 실행할 클래스 지정
+    mainClass = 'org.example.breakfast.MainApplication'  // 실행할 클래스 지정
 }
