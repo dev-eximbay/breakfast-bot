@@ -1,4 +1,4 @@
-name: Upload Breakfast Menu
+name: Upload Breakfast Menu (Java)
 
 on:
   repository_dispatch:

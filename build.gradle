@@ -26,7 +26,7 @@ test {
 }
 
 application {
-    mainClass = 'org.example.breakfast.MainApplication'  // 실행할 클래스 지정
+    mainClass = 'org.example.breakfast.BreakfastMenuUploadApplication'  // 실행할 클래스 지정
 }
 
 // 별도 실행 작업: BreakfastMenuUploadApplication 실행
