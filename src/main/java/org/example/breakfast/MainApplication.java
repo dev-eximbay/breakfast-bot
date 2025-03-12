@@ -30,7 +30,7 @@ public class MainApplication {
                                         + "━━━━━━━━━━━━━━━━━━\n"
                                         + "👉 %s\n"
                                         + "━━━━━━━━━━━━━━━━━━\n"
-                                        + "😋 *Happy Eating!* 🚀",
+                                        + "😋 *Happy Snacking!* 🚀",
                                 today, menu
                         );
                         log.info("Slack으로 보낼 메시지: {}", message);
