@@ -9,8 +9,16 @@ import com.google.firebase.cloud.FirestoreClient;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Formatter;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+
+import org.example.breakfast.model.Menu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,16 +81,28 @@ public class FirestoreMenuService {
         }
     }
 
-    public void addMenu(String date, String menu) {
+    public void addMenu(Menu menu) {
         Firestore db = getFirestore();
-        DocumentReference docRef = db.collection(FIRESTORE_COLLECTION).document(date);
+        String stringDate = menu.date().toString();
+        DocumentReference docRef = db.collection(FIRESTORE_COLLECTION).document(stringDate);
 
         try {
-            docRef.set(new Menu(menu)).get();
-            log.info("날짜 {}에 '{}' 메뉴가 추가되었습니다.", date, menu);
+            docRef.set(menu).get();
+            log.info("날짜 {}에 '{}' 메뉴가 추가되었습니다.", menu.date(), menu);
         } catch (InterruptedException | ExecutionException e) {
             log.error("Firestore에 메뉴를 추가하는 중 오류 발생", e);
             Thread.currentThread().interrupt();
+        }
+    }
+
+
+    public void saveMenus(List<Menu> menus) {
+        Firestore db = FirestoreClient.getFirestore();
+
+        for (Menu menu : menus) {
+            db.collection("breakfasts")
+                    .document(menu.date().toString()) // 날짜를 문서 ID로 사용
+                    .set(menu);
         }
     }
 
@@ -96,20 +116,6 @@ public class FirestoreMenuService {
         } catch (InterruptedException | ExecutionException e) {
             log.error("Firestore에서 메뉴를 삭제하는 중 오류 발생", e);
             Thread.currentThread().interrupt();
-        }
-    }
-
-    private static class Menu {
-        private String menu;
-
-        public Menu() {}
-
-        public Menu(String menu) {
-            this.menu = menu;
-        }
-
-        public String getMenu() {
-            return menu;
         }
     }
 }

@@ -10,11 +10,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 /**
  * Created by Robin on 25. 3. 11.
- * Description : 조식 알림 서비스 MainApplication
+ * Description : 조식 알림 서비스 Main Application
  */
 
-public class MainApplication {
-    private static final Logger log = LoggerFactory.getLogger(MainApplication.class);
+public class DailyBreakfastNotifyApplication {
+    private static final Logger log = LoggerFactory.getLogger(DailyBreakfastNotifyApplication.class);
 
     public static void main(String[] args) {
         try {

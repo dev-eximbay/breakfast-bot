@@ -17,7 +17,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-admin:9.2.0'
     implementation 'com.google.auth:google-auth-library-oauth2-http:1.7.0'
     implementation 'org.slf4j:slf4j-api:2.0.9'
-    implementation 'ch.qos.logback:logback-classic:1.4.11' // Logback 추가
+    implementation 'ch.qos.logback:logback-classic:1.4.11'
+    implementation 'org.apache.poi:poi-ooxml:5.2.3'
 }
 
 test {
@@ -26,4 +27,21 @@ test {
 
 application {
     mainClass = 'org.example.breakfast.MainApplication'  // 실행할 클래스 지정
+}
+
+// 별도 실행 작업: BreakfastMenuUploadApplication 실행
+task runUpload(type: JavaExec) {
+    group = 'application'
+    description = 'Run BreakfastMenuUploadApplication'
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'org.example.breakfast.BreakfastMenuUploadApplication'
+    // 필요 시 인자 추가: args = ["<파일ID>", ...]
+}
+
+// 별도 실행 작업: DailyBreakfastNotifyApplication 실행
+task runNotify(type: JavaExec) {
+    group = 'application'
+    description = 'Run DailyBreakfastNotifyApplication'
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'org.example.breakfast.DailyBreakfastNotifyApplication'
 }
