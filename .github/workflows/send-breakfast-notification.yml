@@ -26,5 +26,6 @@ jobs:
 
       - name: Run Java Bot
         env:
+          FIREBASE_CREDENTIAL: ${{ secrets.FIREBASE_CREDENTIAL }}
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         run: ./gradlew runNotify
