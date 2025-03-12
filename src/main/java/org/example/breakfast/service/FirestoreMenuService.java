@@ -9,12 +9,7 @@ import com.google.firebase.cloud.FirestoreClient;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.util.Formatter;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -29,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 public class FirestoreMenuService {
     private static final Logger log = LoggerFactory.getLogger(FirestoreMenuService.class);
-    private static final String FIREBASE_CREDENTIALS = "FIREBASE_CREDENTIALS";
+    private static final String FIREBASE_CREDENTIAL = "FIREBASE_CREDENTIAL";
     private static final String FIRESTORE_COLLECTION = "breakfasts";
     private static Firestore firestore;
 
@@ -43,9 +38,9 @@ public class FirestoreMenuService {
             return;
         }
 
-        String credentialsJson = System.getenv(FIREBASE_CREDENTIALS);
+        String credentialsJson = System.getenv(FIREBASE_CREDENTIAL);
         if (credentialsJson == null || credentialsJson.isBlank()) {
-            throw new IllegalStateException("환경 변수 '" + FIREBASE_CREDENTIALS + "'가 설정되지 않았습니다.");
+            throw new IllegalStateException("환경 변수 '" + FIREBASE_CREDENTIAL + "'가 설정되지 않았습니다.");
         }
 
         try (var credentialsStream = new ByteArrayInputStream(credentialsJson.getBytes(StandardCharsets.UTF_8))) {
