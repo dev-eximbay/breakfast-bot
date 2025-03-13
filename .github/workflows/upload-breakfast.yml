@@ -3,6 +3,7 @@ name: Upload Breakfast Menu (Java)
 on:
   repository_dispatch:
     types: [upload-breakfast]
+  workflow_dispatch:
 
 jobs:
   upload-breakfast:
