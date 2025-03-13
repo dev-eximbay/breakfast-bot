@@ -27,4 +27,4 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           FIREBASE_CREDENTIAL: ${{ secrets.FIREBASE_CREDENTIAL }}
           FILE_ID: ${{ github.event.client_payload.file_id }}
-        run: ./gradlew runUpload --args="$FILE_ID"
+        run: ./gradlew runUpload --args="${FILE_ID:-1}"
