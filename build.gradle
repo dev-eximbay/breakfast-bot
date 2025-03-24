@@ -14,6 +14,9 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     implementation 'com.slack.api:slack-api-client:1.45.3'
+    implementation 'com.slack.api:bolt-socket-mode:1.36.1'
+    implementation 'org.glassfish.tyrus.bundles:tyrus-standalone-client:1.17'
+    implementation 'javax.websocket:javax.websocket-api:1.1'
     implementation 'com.google.firebase:firebase-admin:9.2.0'
     implementation 'com.google.auth:google-auth-library-oauth2-http:1.7.0'
     implementation 'org.slf4j:slf4j-api:2.0.9'
