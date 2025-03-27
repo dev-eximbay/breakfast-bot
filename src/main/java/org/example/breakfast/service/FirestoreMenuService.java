@@ -12,7 +12,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
+import org.example.breakfast.dto.MenuDto;
 import org.example.breakfast.model.Menu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,12 +80,13 @@ public class FirestoreMenuService {
 
     public void addMenu(Menu menu) {
         Firestore db = getFirestore();
-        String stringDate = menu.date().toString();
+        MenuDto dto = MenuDto.from(menu);
+        String stringDate = menu.getDate().toString();
         DocumentReference docRef = db.collection(FIRESTORE_COLLECTION).document(stringDate);
 
         try {
             docRef.set(menu).get();
-            log.info("날짜 {}에 '{}' 메뉴가 추가되었습니다.", menu.date(), menu);
+            log.info("날짜 {}에 '{}' 메뉴가 추가되었습니다.", stringDate, menu);
         } catch (InterruptedException | ExecutionException e) {
             log.error("Firestore에 메뉴를 추가하는 중 오류 발생", e);
             Thread.currentThread().interrupt();
@@ -93,11 +96,11 @@ public class FirestoreMenuService {
 
     public void saveMenus(List<Menu> menus) {
         Firestore db = FirestoreClient.getFirestore();
-
-        for (Menu menu : menus) {
+        List<MenuDto> menuDtos = menus.stream().map(MenuDto::from).toList();
+        for (MenuDto menuDto : menuDtos) {
             db.collection("breakfasts")
-                    .document(menu.date().toString()) // 날짜를 문서 ID로 사용
-                    .set(menu);
+                    .document(menuDto.getDateString()) // 날짜를 문서 ID로 사용
+                    .set(menuDto);
         }
     }
 

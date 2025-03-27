@@ -1,15 +1,13 @@
 package org.example.breakfast.service;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.breakfast.model.Menu;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,32 +20,68 @@ import java.util.List;
  */
 public class ExcelParserService {
 
-    public List<Menu> parseBreakfastMenu(String filePath) throws IOException {
+    private static final int DATE_ROW_INTERVAL = 15;
+    private static final int DATE_ROW_OFFSET = 4;
+    private static final int MENU_START_OFFSET = 1;
+    private static final int MENU_ROW_COUNT = 14;
+
+    public List<Menu> parseBreakfastMenu(InputStream inputStream) throws IOException {
         List<Menu> breakfastMenus = new ArrayList<>();
-        FileInputStream fis = new FileInputStream(new File(filePath));
-        Workbook workbook = new XSSFWorkbook(fis);
+        Workbook workbook = WorkbookFactory.create(inputStream);
         Sheet sheet = workbook.getSheetAt(0);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+        int currentYear = LocalDate.now().getYear();
+        DateTimeFormatter fullFormatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
 
-        for (Row row : sheet) {
-            if (row.getRowNum() < 2) continue; // 헤더 스킵
-
-            Cell dateCell = row.getCell(0);  // 날짜 셀
-            Cell menuCell = row.getCell(1);  // 메뉴 셀
-
-            if (dateCell == null || menuCell == null) continue;
-
-            LocalDate date = LocalDate.parse(dateCell.getStringCellValue(), formatter);
-            String menu = menuCell.getStringCellValue().trim();
-
-            // 메뉴가 비어있거나 불필요한 항목(포크, 젓가락) 제외
-            if (!menu.isEmpty() && !menu.contains("포크") && !menu.contains("젓가락")) {
-                breakfastMenus.add(new Menu(date, menu, LocalDateTime.now()));
-            }
+        for (int blockStart = DATE_ROW_OFFSET; blockStart < sheet.getLastRowNum(); blockStart += DATE_ROW_INTERVAL) {
+            processDateBlock(sheet, blockStart, currentYear, fullFormatter, breakfastMenus);
         }
 
         workbook.close();
         return breakfastMenus;
+    }
+
+    private void processDateBlock(Sheet sheet, int blockStart, int year, DateTimeFormatter formatter, List<Menu> breakfastMenus) {
+        Row dateRow = sheet.getRow(blockStart);
+        if (dateRow == null) return;
+
+        for (int col = 0; col < dateRow.getLastCellNum(); col++) {
+            LocalDate date = extractDate(dateRow.getCell(col), year, formatter);
+            if (date == null) continue;
+
+            List<String> menuItems = extractMenuItems(sheet, col, blockStart + MENU_START_OFFSET, blockStart + MENU_START_OFFSET + MENU_ROW_COUNT);
+            if (!menuItems.isEmpty()) {
+                breakfastMenus.add(new Menu(date, String.join(", ", menuItems), LocalDateTime.now()));
+            }
+        }
+    }
+
+    private LocalDate extractDate(Cell cell, int year, DateTimeFormatter formatter) {
+        if (cell == null || cell.getCellType() != CellType.STRING) return null;
+        String rawDate = cell.getStringCellValue().trim();
+        if (!rawDate.matches("\\d{2}월 \\d{2}일")) return null;
+
+        return LocalDate.parse(year + "년 " + rawDate, formatter);
+    }
+
+    private List<String> extractMenuItems(Sheet sheet, int col, int startRow, int endRow) {
+        List<String> items = new ArrayList<>();
+        for (int rowIdx = startRow; rowIdx < endRow; rowIdx++) {
+            Row row = sheet.getRow(rowIdx);
+            if (row == null) continue;
+
+            Cell cell = row.getCell(col);
+            if (cell == null || cell.getCellType() != CellType.STRING) continue;
+
+            String value = cell.getStringCellValue().trim();
+            if (isInvalidMenu(value)) continue;
+
+            items.add(value);
+        }
+        return items;
+    }
+
+    private boolean isInvalidMenu(String value) {
+        return value.isEmpty() || value.contains("포크") || value.contains("젓가락") || value.contains("￦");
     }
 }
