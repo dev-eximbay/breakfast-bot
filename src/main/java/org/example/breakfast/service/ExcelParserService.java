@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class ExcelParserService {
         Workbook workbook = WorkbookFactory.create(inputStream);
         Sheet sheet = workbook.getSheetAt(0);
 
-        int currentYear = LocalDate.now().getYear();
+        int currentYear = LocalDate.now(ZoneId.of("Asia/Seoul")).getYear();
         DateTimeFormatter fullFormatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
 
         for (int blockStart = DATE_ROW_OFFSET; blockStart < sheet.getLastRowNum(); blockStart += DATE_ROW_INTERVAL) {

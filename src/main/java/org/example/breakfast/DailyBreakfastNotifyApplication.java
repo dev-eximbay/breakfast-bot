@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 /**
  * Created by Robin on 25. 3. 11.
@@ -19,7 +20,7 @@ public class DailyBreakfastNotifyApplication {
     public static void main(String[] args) {
         try {
             FirestoreMenuService menuService = new FirestoreMenuService();
-            String today = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+            String today = LocalDate.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ISO_LOCAL_DATE);
             System.out.println("today = " + today);
 
             menuService.fetchMenu(today).ifPresentOrElse(
