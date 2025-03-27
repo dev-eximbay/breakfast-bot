@@ -13,7 +13,7 @@ public class SlackBotService {
     private static final Logger log = LoggerFactory.getLogger(SlackBotService.class);
 
     public static void sendSlackMessage(String message) {
-        if (SLACK_BOT_TOKEN == null || CHANNEL_ID == null) {
+        if (SLACK_BOT_TOKEN == null) {
             log.error("Slack 환경 변수가 설정되지 않았습니다.");
             return;
         }
