@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class SlackBotService {
     private static final String SLACK_BOT_TOKEN = System.getenv("SLACK_BOT_TOKEN");
-    private static final String CHANNEL_ID = "#조식-메뉴";  // 원하는 Slack 채널
+    private static final String CHANNEL_ID = "#조식알림장";  // 원하는 Slack 채널
     private static final Logger log = LoggerFactory.getLogger(SlackBotService.class);
 
     public static void sendSlackMessage(String message) {
