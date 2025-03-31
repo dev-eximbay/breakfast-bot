@@ -35,7 +35,7 @@ public class BreakfastMenuUploadApplication {
 
         App app = new App(config);
 
-        app.command("/upload-breakfast", (req, ctx) -> {
+        app.command("/조식등록", (req, ctx) -> {
             String channelId = req.getPayload().getChannelId();
             ConversationsHistoryResponse history = ctx.client().conversationsHistory(r -> r.channel(channelId).limit(5));
 
