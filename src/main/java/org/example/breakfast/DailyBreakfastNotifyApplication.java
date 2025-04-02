@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+
 /**
  * Created by Robin on 25. 3. 11.
  * Description : 조식 알림 서비스 Main Application
@@ -26,7 +27,8 @@ public class DailyBreakfastNotifyApplication {
             menuService.fetchMenu(today).ifPresentOrElse(
                     menu -> {
                         String message = String.format(
-                                "*📅 날짜:* %s\n\n"
+                                "<!channel> \n"
+                                        + "*📅 날짜:* %s\n\n"
                                         + "🍽 *오늘의 조식 메뉴* \n"
                                         + "━━━━━━━━━━━━━━━━━━\n"
                                         + "👉 %s\n"
