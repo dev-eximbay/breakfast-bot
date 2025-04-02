@@ -2,15 +2,27 @@ name: Breakfast Slack Bot (Java)
 
 on:
   schedule:
-    - cron: "25 22 * * *"  # 매일 아침 9시 (KST) 실행 (UTC 기준 00:00)
-  workflow_dispatch:  # 수동 실행 가능
+    - cron: "25 22 * * *"  # 매일 아침 7시 25분 (KST)
+    - cron: "50 7 * * *"   # 매일 오후 4시 50분 (KST)
+  workflow_dispatch:
 
 jobs:
   send_message:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Cache Gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
 
       - name: Set up JDK
         uses: actions/setup-java@v3

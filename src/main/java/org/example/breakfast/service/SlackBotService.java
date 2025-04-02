@@ -17,6 +17,7 @@ public class SlackBotService {
             log.error("Slack 환경 변수가 설정되지 않았습니다.");
             return;
         }
+        log.info("[{}]Slack으로 보낼 메시지: \n{}", CHANNEL_ID, message);
 
         Slack slack = Slack.getInstance();
         try {
