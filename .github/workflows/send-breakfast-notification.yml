@@ -2,7 +2,6 @@ name: Breakfast Slack Bot (Java)
 
 on:
   schedule:
-    - cron: "25 22 * * *"  # 매일 아침 7시 25분 (KST)
     - cron: "50 7 * * *"   # 매일 오후 4시 50분 (KST)
   workflow_dispatch:
 
