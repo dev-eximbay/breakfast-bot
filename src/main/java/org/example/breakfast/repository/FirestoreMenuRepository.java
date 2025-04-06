@@ -1,4 +1,4 @@
-package org.example.breakfast.service;
+package org.example.breakfast.repository;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.*;
@@ -9,10 +9,11 @@ import com.google.firebase.cloud.FirestoreClient;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 import org.example.breakfast.dto.MenuDto;
 import org.example.breakfast.model.Menu;
@@ -21,17 +22,21 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Created by Robin on 25. 3. 11.
- * Description :
+ * Description: Firestore에 저장된 조식 메뉴 데이터를 조회·추가·삭제하는 기능을 담당하는 서비스 클래스.
  */
 
-public class FirestoreMenuService {
-    private static final Logger log = LoggerFactory.getLogger(FirestoreMenuService.class);
+public class FirestoreMenuRepository implements MenuRepository {
+    private static final Logger log = LoggerFactory.getLogger(FirestoreMenuRepository.class);
     private static final String FIREBASE_CREDENTIAL = "FIREBASE_CREDENTIAL";
     private static final String FIRESTORE_COLLECTION = "breakfasts";
     private static Firestore firestore;
 
-    public FirestoreMenuService() throws IOException {
-        initializeFirebase();
+    public FirestoreMenuRepository() {
+        try {
+            initializeFirebase();
+        } catch (IOException e) {
+            log.error("Firebase 초기화 중 오류 발생", e);
+        }
     }
 
     private void initializeFirebase() throws IOException {
@@ -64,9 +69,12 @@ public class FirestoreMenuService {
         return firestore;
     }
 
-    public Optional<String> fetchMenu(String date) {
+    @Override
+    public Optional<String> fetchMenu(LocalDate date) {
+        String dateFormat = date.format(DateTimeFormatter.ISO_LOCAL_DATE);
+
         Firestore db = getFirestore();
-        DocumentReference docRef = db.collection(FIRESTORE_COLLECTION).document(date);
+        DocumentReference docRef = db.collection(FIRESTORE_COLLECTION).document(dateFormat);
 
         try {
             DocumentSnapshot document = docRef.get().get();
@@ -78,6 +86,7 @@ public class FirestoreMenuService {
         }
     }
 
+    @Override
     public void addMenu(Menu menu) {
         Firestore db = getFirestore();
         MenuDto dto = MenuDto.from(menu);
@@ -93,7 +102,7 @@ public class FirestoreMenuService {
         }
     }
 
-
+    @Override
     public void saveMenus(List<Menu> menus) {
         Firestore db = FirestoreClient.getFirestore();
         List<MenuDto> menuDtos = menus.stream().map(MenuDto::from).toList();
@@ -104,9 +113,12 @@ public class FirestoreMenuService {
         }
     }
 
-    public void deleteMenu(String date) {
+    @Override
+    public void deleteMenu(LocalDate date) {
+        String dateFormat = date.format(DateTimeFormatter.ISO_LOCAL_DATE);
+
         Firestore db = getFirestore();
-        DocumentReference docRef = db.collection(FIRESTORE_COLLECTION).document(date);
+        DocumentReference docRef = db.collection(FIRESTORE_COLLECTION).document(dateFormat);
 
         try {
             docRef.delete().get();

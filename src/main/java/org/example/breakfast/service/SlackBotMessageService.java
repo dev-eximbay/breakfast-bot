@@ -7,12 +7,12 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-public class SlackBotService {
+public class SlackBotMessageService {
     private static final String SLACK_BOT_TOKEN = System.getenv("SLACK_BOT_TOKEN");
     private static final String CHANNEL_ID = "#조식알림장";  // 원하는 Slack 채널
-    private static final Logger log = LoggerFactory.getLogger(SlackBotService.class);
+    private static final Logger log = LoggerFactory.getLogger(SlackBotMessageService.class);
 
-    public static void sendSlackMessage(String message) {
+    public void sendSlackMessage(String message) {
         if (SLACK_BOT_TOKEN == null) {
             log.error("Slack 환경 변수가 설정되지 않았습니다.");
             return;

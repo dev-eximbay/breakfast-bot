@@ -3,13 +3,13 @@ package org.example.breakfast;
 
 import com.slack.api.bolt.App;
 import com.slack.api.bolt.AppConfig;
-import com.slack.api.bolt.socket_mode.SocketModeApp;
 import com.slack.api.methods.response.conversations.ConversationsHistoryResponse;
 import com.slack.api.model.File;
 import com.slack.api.model.Message;
+import org.example.breakfast.config.AppContext;
 import org.example.breakfast.model.Menu;
 import org.example.breakfast.service.ExcelParserService;
-import org.example.breakfast.service.FirestoreMenuService;
+import org.example.breakfast.repository.FirestoreMenuRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,18 +24,21 @@ import java.util.List;
  */
 public class BreakfastMenuUploadApplication {
     private static final Logger log = LoggerFactory.getLogger(BreakfastMenuUploadApplication.class);
+    public static final String COMMAND_UPLOAD_BREAKFAST = "/조식등록";
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         String botToken = System.getenv("SLACK_BOT_TOKEN");
         String appToken = System.getenv("SLACK_APP_TOKEN");
+        AppContext appContext = new AppContext();
+        FirestoreMenuRepository menuRepository = appContext.menuRepository();
+        ExcelParserService excelParserService = appContext.excelParserService();
 
         AppConfig config = AppConfig.builder()
                 .singleTeamBotToken(botToken)
                 .build();
-
         App app = new App(config);
 
-        app.command("/조식등록", (req, ctx) -> {
+        app.command(COMMAND_UPLOAD_BREAKFAST, (req, ctx) -> {
             String channelId = req.getPayload().getChannelId();
             ConversationsHistoryResponse history = ctx.client().conversationsHistory(r -> r.channel(channelId).limit(5));
 
@@ -56,15 +59,13 @@ public class BreakfastMenuUploadApplication {
                         HttpURLConnection connection = (HttpURLConnection) new URL(fileUrl).openConnection();
                         connection.setRequestProperty("Authorization", "Bearer " + botToken);
                         InputStream inputStream = connection.getInputStream();
-                        ExcelParserService excelParserService = new ExcelParserService();
                         List<Menu> menus = excelParserService.parseBreakfastMenu(inputStream);
-                        System.out.println("menus.toString() = " + menus.toString());
-                        FirestoreMenuService firestoreMenuService = new FirestoreMenuService();
-                        firestoreMenuService.saveMenus(menus);
+                        log.info("menus.toString() = {}", menus.toString());
+                        menuRepository.saveMenus(menus);
                         inputStream.close();
                         return ctx.ack("엑셀 파일을 성공적으로 읽었습니다!");
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.error("조식 메뉴 업로드 중 오류 발생", e);
                         return ctx.ack("파일 다운로드 중 오류 발생: " + e.getMessage());
                     }
                 }
@@ -73,6 +74,11 @@ public class BreakfastMenuUploadApplication {
             return ctx.ack("최근 메시지에서 첨부된 파일을 찾을 수 없습니다.");
         });
 
-        new SocketModeApp(appToken, app).start();
+        try {
+            appContext.socketModeApp(appToken, app).start();
+        } catch (Exception e) {
+            log.error("❌ Slack SocketModeApp 실행 중 치명적인 오류 발생", e);
+            throw new IllegalStateException("Slack SocketModeApp 실행 실패", e);
+        }
     }
 }
