@@ -1,5 +1,7 @@
 package org.example.breakfast.service;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -11,6 +13,8 @@ import java.util.Locale;
  */
 public class SlackMessageFormatter {
     private static final String MENTION_CHANNEL = "<!channel>";
+    public static final TextStyle TEXT_STYLE_SHORT = TextStyle.SHORT;
+    public static final Locale LOCALE_KOREAN = Locale.KOREAN;
 
     public static String formatTodayMenu(LocalDate baseDate, String menu) {
         String baseDateFormat = baseDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
@@ -28,8 +32,8 @@ public class SlackMessageFormatter {
     }
 
     public static String formatNextMenu(LocalDate alertDate, String menu) {
-        String alertDateFormat = alertDate.format(DateTimeFormatter.ofPattern("MM-dd"));
-        String displayName = alertDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+        String alertDateFormat = getAlertDateFormat(alertDate);
+        String displayName = getDisplayName(alertDate);
 
         return String.format(
                 "%s \n\n"
@@ -40,5 +44,15 @@ public class SlackMessageFormatter {
                         + "😋 *Happy Snacking!* 🍪",
                 MENTION_CHANNEL, alertDateFormat, displayName, menu
         );
+    }
+
+    @NotNull
+    private static String getAlertDateFormat(LocalDate alertDate) {
+        return alertDate.format(DateTimeFormatter.ofPattern("MM-dd"));
+    }
+
+    @NotNull
+    private static String getDisplayName(LocalDate alertDate) {
+        return alertDate.getDayOfWeek().getDisplayName(TEXT_STYLE_SHORT, LOCALE_KOREAN);
     }
 }
