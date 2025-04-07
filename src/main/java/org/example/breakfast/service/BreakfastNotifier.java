@@ -45,7 +45,7 @@ public class BreakfastNotifier {
 
         menuRepository.fetchMenu(nextDate).ifPresentOrElse(
                 menu -> {
-                    String message = SlackMessageFormatter.formatNextMenu(currentDate, nextDate, menu);
+                    String message = SlackMessageFormatter.formatNextMenu(nextDate, menu);
                     slackBotService.sendSlackMessage(message);
                 },
                 () -> log.info("내일 메뉴 정보가 없습니다.")

@@ -27,19 +27,18 @@ public class SlackMessageFormatter {
         );
     }
 
-    public static String formatNextMenu(LocalDate baseDate, LocalDate alertDate, String menu) {
-        String baseDateFormat = baseDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
+    public static String formatNextMenu(LocalDate alertDate, String menu) {
         String alertDateFormat = alertDate.format(DateTimeFormatter.ofPattern("MM-dd"));
-        String displayName = baseDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+        String displayName = alertDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
 
         return String.format(
-                "%s \n"
-                        + "*📅 날짜:* %s\n\n"
+                "%s \n\n"
                         + "⏰ *%s(%s) 조식 메뉴* \n"
                         + "━━━━━━━━━━━━━━━━━━\n"
                         + "👉 %s\n"
-                        + "━━━━━━━━━━━━━━━━━━\n",
-                MENTION_CHANNEL, baseDateFormat, alertDateFormat, displayName, menu
+                        + "━━━━━━━━━━━━━━━━━━\n"
+                        + "😋 *Happy Snacking!* 🍪",
+                MENTION_CHANNEL, alertDateFormat, displayName, menu
         );
     }
 }
