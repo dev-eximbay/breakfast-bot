@@ -34,15 +34,18 @@ public class SlackMessageFormatter {
     public static String formatNextMenu(LocalDate alertDate, String menu) {
         String alertDateFormat = getAlertDateFormat(alertDate);
         String displayName = getDisplayName(alertDate);
+        String link = "https://dev-eximbay.github.io/breakfast-calendar";
 
         return String.format(
                 "%s \n\n"
-                        + "⏰ *%s(%s) 조식 메뉴* \n"
+                        + "⏰ *%s(%s) 조식 메뉴*  🍽️\n"
                         + "━━━━━━━━━━━━━━━━━━\n"
                         + "👉 %s\n"
+                        + "━━━━━━━━━━━━━━━━━━\n\n"
+                        + "📅 *<%s|(신규 기능)조식 달력 보러가기!>* \n"
                         + "━━━━━━━━━━━━━━━━━━\n"
-                        + "😋 *Happy Snacking!* 🍪",
-                MENTION_CHANNEL, alertDateFormat, displayName, menu
+                        + "\uD83D\uDC68\u200D\uD83D\uDCBB *Thanks to <@U061TCFL3NX>!* 이제 조식 달력을 웹으로도 볼 수 있어요!",
+                MENTION_CHANNEL, alertDateFormat, displayName, menu, link
         );
     }
 
