@@ -32,10 +32,16 @@ public class ExcelParserService {
         Sheet sheet = workbook.getSheetAt(0);
 
         int currentYear = LocalDate.now(ZoneId.of("Asia/Seoul")).getYear();
+        int currentMonth = LocalDate.now(ZoneId.of("Asia/Seoul")).getMonthValue();
+
+        int applyYear = currentYear;
+        if (currentMonth == 12) {
+            applyYear += 1;
+        }
         DateTimeFormatter fullFormatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
 
         for (int blockStart = DATE_ROW_OFFSET; blockStart < sheet.getLastRowNum(); blockStart += DATE_ROW_INTERVAL) {
-            processDateBlock(sheet, blockStart, currentYear, fullFormatter, breakfastMenus);
+            processDateBlock(sheet, blockStart, applyYear, fullFormatter, breakfastMenus);
         }
 
         workbook.close();
